@@ -126,7 +126,9 @@ LINUX_BINARY_BUILD_WORFKLOWS = [
         package_type="libtorch",
         abi_version=generate_binary_build_matrix.CXX11_ABI,
         build_configs=generate_binary_build_matrix.generate_libtorch_matrix(
-            OperatingSystem.LINUX, generate_binary_build_matrix.CXX11_ABI
+            OperatingSystem.LINUX,
+            generate_binary_build_matrix.CXX11_ABI,
+            libtorch_variants=["shared-with-deps"],
         ),
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_BINARIES, LABEL_CIFLOW_BINARIES_LIBTORCH},
@@ -138,7 +140,9 @@ LINUX_BINARY_BUILD_WORFKLOWS = [
         package_type="libtorch",
         abi_version=generate_binary_build_matrix.PRE_CXX11_ABI,
         build_configs=generate_binary_build_matrix.generate_libtorch_matrix(
-            OperatingSystem.LINUX, generate_binary_build_matrix.PRE_CXX11_ABI
+            OperatingSystem.LINUX,
+            generate_binary_build_matrix.PRE_CXX11_ABI,
+            libtorch_variants=["shared-with-deps"],
         ),
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_BINARIES, LABEL_CIFLOW_BINARIES_LIBTORCH},
@@ -213,7 +217,9 @@ WINDOWS_BINARY_BUILD_WORKFLOWS = [
         package_type="libtorch",
         abi_version=generate_binary_build_matrix.RELEASE,
         build_configs=generate_binary_build_matrix.generate_libtorch_matrix(
-            OperatingSystem.WINDOWS, generate_binary_build_matrix.RELEASE
+            OperatingSystem.WINDOWS,
+            generate_binary_build_matrix.RELEASE,
+            libtorch_variants=["shared-with-deps"],
         ),
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_BINARIES, LABEL_CIFLOW_BINARIES_LIBTORCH},
@@ -225,7 +231,9 @@ WINDOWS_BINARY_BUILD_WORKFLOWS = [
         package_type="libtorch",
         abi_version=generate_binary_build_matrix.DEBUG,
         build_configs=generate_binary_build_matrix.generate_libtorch_matrix(
-            OperatingSystem.WINDOWS, generate_binary_build_matrix.DEBUG
+            OperatingSystem.WINDOWS,
+            generate_binary_build_matrix.DEBUG,
+            libtorch_variants=["shared-with-deps"],
         ),
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_BINARIES, LABEL_CIFLOW_BINARIES_LIBTORCH},
@@ -323,7 +331,9 @@ MACOS_BINARY_BUILD_WORKFLOWS = [
         package_type="libtorch",
         abi_version=generate_binary_build_matrix.CXX11_ABI,
         build_configs=generate_binary_build_matrix.generate_libtorch_matrix(
-            OperatingSystem.MACOS, generate_binary_build_matrix.CXX11_ABI
+            OperatingSystem.MACOS,
+            generate_binary_build_matrix.CXX11_ABI,
+            libtorch_variants=["shared-with-deps"],
         ),
         ciflow_config=CIFlowConfig(
             labels={LABEL_CIFLOW_BINARIES, LABEL_CIFLOW_BINARIES_LIBTORCH},
