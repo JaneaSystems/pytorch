@@ -23,6 +23,9 @@
 #include <ATen/core/TensorAccessor.h>
 #include <ATen/StorageUtils.h>
 
+#include <iostream>
+#include <chrono>
+
 namespace c10 {
 class Scalar;
 }
@@ -78,6 +81,19 @@ inline bool variable_excluded_from_dispatch() {
 //   but this requires a reference-count bump. OptionalTensorRef on
 //   the other hand can materialize a `const Tensor &` without
 //   touching the reference-count.
+
+#define DEFINE_TIMER(NAME) static double elapsed_seconds_##NAME = 0;
+#define START_TIMER(NAME) auto start##NAME = std::chrono::steady_clock::now();
+#define BEGIN_TIMER(NAME)                   \
+  static double elapsed_seconds_##NAME = 0; \
+  auto start##NAME = std::chrono::steady_clock::now();
+#define END_TIMER(NAME)                              \
+  auto end##NAME = std::chrono::steady_clock::now(); \
+  elapsed_seconds_##NAME +=                          \
+      std::chrono::duration<double>(end##NAME - start##NAME).count();
+#define PRINT_TIMER(NAME)                                           \
+  std::cout << "benchmark  " << __FUNCTION__ << " " << #NAME << " " \
+            << elapsed_seconds_##NAME << " seconds" << std::endl;
 class TORCH_API TensorBase {
  public:
   struct unsafe_borrow_t { explicit unsafe_borrow_t() = default; };
@@ -899,6 +915,8 @@ public:
 protected:
   void enforce_invariants();
   c10::intrusive_ptr<TensorImpl, UndefinedTensorImpl> impl_;
+public:
+ mutable bool use_log=false;
 
 private:
   TensorBase __dispatch_contiguous(c10::MemoryFormat) const;

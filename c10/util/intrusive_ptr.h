@@ -5,12 +5,28 @@
 #include <atomic>
 #include <climits>
 #include <memory>
-
+#include <chrono>
+#include <iostream>
+#ifndef DEFINE_TIMER
+#define DEFINE_TIMER(NAME) static double elapsed_seconds_##NAME = 0;
+#define START_TIMER(NAME) auto start##NAME = std::chrono::steady_clock::now();
+#define BEGIN_TIMER(NAME)                   \
+  static double elapsed_seconds_##NAME = 0; \
+  auto start##NAME = std::chrono::steady_clock::now();
+#define END_TIMER(NAME)                              \
+  auto end##NAME = std::chrono::steady_clock::now(); \
+  elapsed_seconds_##NAME +=                          \
+      std::chrono::duration<double>(end##NAME - start##NAME).count();
+#define PRINT_TIMER(NAME)                                           \
+  std::cout << "benchmark  " << __FUNCTION__ << " " << #NAME << " " \
+            << elapsed_seconds_##NAME << " seconds" << std::endl;
+#endif
 namespace pybind11 {
 template <typename, typename...>
 class class_;
 }
-
+//static int global_counter_intrusive_ptr;
+//DEFINE_TIMER(TensorBase_Constructor_intrusive_ptr)
 namespace c10 {
 class intrusive_ptr_target;
 namespace raw {

@@ -5,7 +5,7 @@
 #include <c10/util/Logging.h>
 #include <c10/util/irange.h>
 #include <c10/util/numa.h>
-
+#include <iostream>
 #ifdef USE_MIMALLOC
 #include <mimalloc.h>
 #endif
@@ -103,6 +103,13 @@ void* alloc_cpu(size_t nbytes) {
       " bytes.");
 #elif defined(_MSC_VER)
 #ifdef USE_MIMALLOC
+static bool DoLog=true;
+if(DoLog)
+{
+  std::cout << "using minimaloc\n";
+  DoLog=false;
+}
+
   data = mi_malloc_aligned(nbytes, gAlignment);
 #else
   data = _aligned_malloc(nbytes, gAlignment);

@@ -37,6 +37,20 @@
 #include <ostream>
 #include <type_traits>
 #include <utility>
+#include <chrono>
+#include <iostream>
+#define DEFINE_TIMER(NAME) static double elapsed_seconds_##NAME = 0;
+#define START_TIMER(NAME) auto start##NAME = std::chrono::steady_clock::now();
+#define BEGIN_TIMER(NAME)                   \
+  static double elapsed_seconds_##NAME = 0; \
+  auto start##NAME = std::chrono::steady_clock::now();
+#define END_TIMER(NAME)                              \
+  auto end##NAME = std::chrono::steady_clock::now(); \
+  elapsed_seconds_##NAME +=                          \
+      std::chrono::duration<double>(end##NAME - start##NAME).count();
+#define PRINT_TIMER(NAME)                                           \
+  std::cout << "benchmark  " << __FUNCTION__ << " " << #NAME << " " \
+            << elapsed_seconds_##NAME << " seconds" << std::endl;
 
 C10_CLANG_DIAGNOSTIC_PUSH()
 #if C10_CLANG_HAS_WARNING("-Wshorten-64-to-32")
@@ -458,14 +472,14 @@ class SmallVectorTemplateBase : public SmallVectorTemplateCommon<T> {
 
   template <typename... ArgTypes>
   T& growAndEmplaceBack(ArgTypes&&... Args) {
-    // Grow manually in case one of Args is an internal reference.
-    size_t NewCapacity = 0;
+        // Grow manually in case one of Args is an internal reference.
+        size_t NewCapacity = 0;
     T* NewElts = mallocForGrow(0, NewCapacity);
     ::new ((void*)(NewElts + this->size())) T(std::forward<ArgTypes>(Args)...);
     moveElementsForGrow(NewElts);
     takeAllocationForGrow(NewElts, NewCapacity);
     this->set_size(this->size() + 1);
-    return this->back();
+        return this->back();
   }
 
  public:
@@ -612,8 +626,8 @@ class SmallVectorTemplateBase<T, true> : public SmallVectorTemplateCommon<T> {
     // Use push_back with a copy in case Args has an internal reference,
     // side-stepping reference invalidation problems without losing the realloc
     // optimization.
-    push_back(T(std::forward<ArgTypes>(Args)...));
-    return this->back();
+        push_back(T(std::forward<ArgTypes>(Args)...));
+        return this->back();
   }
 
  public:
@@ -1007,12 +1021,12 @@ class SmallVectorImpl : public SmallVectorTemplateBase<T> {
 
   template <typename... ArgTypes>
   reference emplace_back(ArgTypes&&... Args) {
-    if (C10_UNLIKELY(this->size() >= this->capacity()))
+        if (C10_UNLIKELY(this->size() >= this->capacity()))
       return this->growAndEmplaceBack(std::forward<ArgTypes>(Args)...);
-
+    
     ::new ((void*)this->end()) T(std::forward<ArgTypes>(Args)...);
-    this->set_size(this->size() + 1);
-    return this->back();
+        this->set_size(this->size() + 1);
+        return this->back();
   }
 
   SmallVectorImpl& operator=(const SmallVectorImpl& RHS);

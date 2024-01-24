@@ -9,7 +9,7 @@
 #include <ATen/TensorIterator.h>
 #include <ATen/TensorOperators.h>
 #include <ATen/TensorMeta.h>
-
+#include <iostream>
 #ifndef AT_PER_OPERATOR_HEADERS
 #include <ATen/Functions.h>
 #include <ATen/NativeFunctions.h>
@@ -166,7 +166,19 @@ TORCH_META_FUNC2(sub, Tensor) (
 TORCH_META_FUNC2(mul, Tensor) (
   const Tensor& self, const Tensor& other
 ) {
-  build_borrowing_binary_op(maybe_get_output(), self, other);
+  
+ //static double elapsed_seconds_total = 0;
+static int counter = 0;
+counter++;
+BEGIN_TIMER(Tensor_MUL)
+build_borrowing_binary_op(maybe_get_output(), self, other);
+END_TIMER(Tensor_MUL)
+std::cout << counter << " build_borrowing_binary_op\n";
+if (counter ==750){
+PRINT_TIMER(Tensor_MUL)
+}
+//std::cout << "TORCH_META_FUNC2 is: " << elapsed_seconds_total    << " seconds" << std::endl;
+     
 }
 
 TORCH_META_FUNC2(div, Tensor) (const Tensor& self, const Tensor& other) {
