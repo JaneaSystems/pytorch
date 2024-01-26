@@ -115,10 +115,10 @@ static inline void launch_vectorized_kernel(
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
   auto stream = at::cuda::getCurrentCUDAStream();
   int vec_size = memory::can_vectorize_up_to<func_t>(data);
-
+  static int counter = 0;
   switch (vec_size) {
     case 4:
-       static int counter = 0;
+
        counter++;
        BEGIN_TIMER(gpu_kernel);
       vectorized_elementwise_kernel<4, func_t, array_t>
