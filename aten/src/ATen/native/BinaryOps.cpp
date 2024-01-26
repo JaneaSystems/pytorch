@@ -173,7 +173,7 @@ counter++;
 BEGIN_TIMER(Tensor_MUL)
 build_borrowing_binary_op(maybe_get_output(), self, other);
 END_TIMER(Tensor_MUL)
-std::cout << counter << " build_borrowing_binary_op\n";
+//std::cout << counter << " build_borrowing_binary_op\n";
 //if (counter ==750){
 PRINT_TIMER(Tensor_MUL)
 //}
