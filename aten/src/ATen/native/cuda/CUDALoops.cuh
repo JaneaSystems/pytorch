@@ -118,8 +118,16 @@ static inline void launch_vectorized_kernel(
 
   switch (vec_size) {
     case 4:
+       static int counter = 0;
+       counter++;
+       BEGIN_TIMER(gpu_kernel);
       vectorized_elementwise_kernel<4, func_t, array_t>
           <<<grid, num_threads(), 0, stream>>>(N, f, data);
+       END_TIMER(gpu_kernel);
+       std::cout << counter << " kernel\n";
+       if (counter ==750)
+       PRINT_TIMER(gpu_kernel);
+      
       C10_CUDA_KERNEL_LAUNCH_CHECK();
       break;
     case 2:
