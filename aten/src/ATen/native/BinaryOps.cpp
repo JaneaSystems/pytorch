@@ -459,8 +459,9 @@ TORCH_IMPL_FUNC(mul_out) (
   mul_stub(device_type(), *this);
   END_TIMER(Tensor_mul_stub)
   // std::cout << counter << " build_borrowing_binary_op\n";
-  if (counter ==750){
-  PRINT_TIMER(Tensor_mul_stub)
+  if (counter == 750) {
+    PRINT_TIMER(Tensor_mul_stub)
+  }
 }
 
 TORCH_IMPL_FUNC(div_out) (const Tensor& self, const Tensor& other, const Tensor& result) {
