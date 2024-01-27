@@ -15,7 +15,8 @@
 
 // NOTE: CUDA on Windows requires that the enclosing function
 // of a __device__ lambda not have internal linkage.
-
+__device__ unsigned long long elapsedBinary_Internal=0;
+__device__ unsigned long long counterCuda_Internal=0;
 namespace at::native {
 
 CONSTEXPR_EXCEPT_WIN_CUDA char mul_name[] = "mul_kernel";

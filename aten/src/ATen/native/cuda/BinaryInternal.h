@@ -14,7 +14,8 @@
 #include <ATen/native/cuda/Loops.cuh>
 
 #include <type_traits>
-
+extern __device__ unsigned long long elapsedBinary_Internal;
+extern __device__ unsigned long long counterCuda_Internal;
 namespace at {
 namespace native {
 namespace binary_internal {
@@ -26,10 +27,15 @@ struct DivFunctor {
   }
 };
 
+
 template <typename T>
 struct MulFunctor {
   __device__ T operator()(T a, T b) const {
-    return a * b;
+    unsigned long long start = clock64();
+    auto t = a * b;
+    elapsedBinary_Internal += (clock64() - start);
+    counterCuda_Internal++;
+    return t;
   }
 };
 
