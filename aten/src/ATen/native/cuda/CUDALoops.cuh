@@ -123,9 +123,11 @@ static inline void launch_vectorized_kernel(
     vectorized_elementwise_kernel<4, func_t, array_t>
         <<<grid, num_threads(), 0, stream>>>(N, f, data);
     END_TIMER(gpu_kernel_vectorize);
-    std::cout << counter << " kernel\n";
-    if (counter == 750)
+    //std::cout << counter << " kernel\n";
+    if (counter == 750) {
       PRINT_TIMER(gpu_kernel_vectorize);
+      std::cout << "num threads " << num_threads();
+    }
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
