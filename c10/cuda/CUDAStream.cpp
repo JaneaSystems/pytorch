@@ -273,6 +273,7 @@ cudaStream_t CUDAStream::stream() const {
         ")");
     auto test = streams[st.getStreamType() - 1][device_index][si];
     END_TIMER(cuda_stream_stream)
+    PRINT_TIMER(cuda_stream_stream);
         if (counter == 750)
         {
       PRINT_TIMER(cuda_stream_stream);
