@@ -155,13 +155,17 @@ struct BUnaryFunctor {
     func_t f;
     opmath_arg2_t b;
 };
+__device__ unsigned long long elapsed;
 
 // Though seemingly noop, this inserts casts from arg1_t to func_t's type
 // (which may be higher precision), as well as casts to return_t
 template <typename arg1_t, typename arg2_t, typename return_t, typename func_t>
 struct BinaryFunctor {
   __device__ return_t operator()(arg1_t a, arg2_t b) const {
-    return f(a, b);
+    unsigned long long start = clock64();
+    auto t= f(a, b);
+    elapsed += (clock64() - start);
+    return t;
   }
   BinaryFunctor(func_t f_): f(f_) {}
   private:
@@ -236,13 +240,23 @@ void opmath_symmetric_gpu_kernel_with_scalars(TensorIteratorBase& iter, const fu
   }
 
   if (iter.ninputs() == 2) {
-    //static int counter = 0;
-    //counter++;
+    static int counter = 0;
+    counter++;
     //BEGIN_TIMER(gpu_kernel);
     gpu_kernel(iter, BinaryFunctor<scalar_t, scalar_t, return_t, func_t>(f));
     //END_TIMER(gpu_kernel);
     //std::cout << counter << " kernel\n";
-    //if (counter ==750)
+    if (counter == 750)
+    {
+      unsigned long long h_time = 0;
+      cudaMemcpyFromSymbol(
+          &h_time,
+          elapsed,
+          sizeof(unsigned long long),
+          0,
+          cudaMemcpyDeviceToHost);
+      std::cout << "Elapsed time in clock ticks: " << h_time << std::endl;
+    }
     //PRINT_TIMER(gpu_kernel);
   } else {
     AUnaryFunctor<scalar_t, scalar_t, return_t, func_t> unary_f(f, scalar_val);
