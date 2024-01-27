@@ -14,8 +14,13 @@
 #include <ATen/native/cuda/Loops.cuh>
 
 #include <type_traits>
+#ifndef CUDA_GLOBALS_PRIMARY_H
+#define CUDA_GLOBALS_PRIMARY_H
+
 extern __device__ unsigned long long elapsedBinary_Internal;
 extern __device__ unsigned long long counterCuda_Internal;
+
+#endif // CUDA_GLOBALS_PRIMARY_H
 namespace at {
 namespace native {
 namespace binary_internal {

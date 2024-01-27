@@ -11,8 +11,13 @@
 
 #include <ATen/native/cuda/MemoryAccess.cuh>
 
+#ifndef CUDA_GLOBALS_PRIMARY_H
+#define CUDA_GLOBALS_PRIMARY_H
+
 extern __device__ unsigned long long elapsedBinary_Internal;
 extern __device__ unsigned long long counterCuda_Internal;
+
+#endif // CUDA_GLOBALS_PRIMARY_H
 namespace at { namespace native {
 
 template<int N>
