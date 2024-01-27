@@ -110,6 +110,7 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t data) {
+
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
   using traits = function_traits<func_t>;
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
