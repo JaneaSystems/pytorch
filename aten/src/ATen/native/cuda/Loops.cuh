@@ -286,7 +286,7 @@ void opmath_symmetric_gpu_kernel_with_scalars(TensorIteratorBase& iter, const fu
 
       std::cout << "Elapsed time in clock ticks: "
                 << elapsedBinary_Internal_host << " counter "
-                << counterCuda_Internal << std::endl;
+                << counterCuda_Internal_host << std::endl;
     }
     //PRINT_TIMER(gpu_kernel);
   } else {
