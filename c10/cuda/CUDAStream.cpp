@@ -259,7 +259,10 @@ cudaStream_t CUDAStream::stream() const {
         " official API like c10::cuda::getStreamFromPool() to get a new stream.");
     return nullptr;
   } else if (st.isExt()) {
-    return reinterpret_cast<cudaStream_t>(stream_id);
+    auto t = reinterpret_cast<cudaStream_t>(stream_id);
+    END_TIMER(cuda_stream_stream);
+    PRINT_TIMER(cuda_stream_stream);
+    return t;
   } else {
     auto streamType = st.getStreamType();
     TORCH_INTERNAL_ASSERT(
