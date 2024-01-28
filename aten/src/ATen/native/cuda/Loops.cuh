@@ -11,13 +11,6 @@
 
 #include <ATen/native/cuda/MemoryAccess.cuh>
 
-#ifndef CUDA_GLOBALS_PRIMARY_H
-#define CUDA_GLOBALS_PRIMARY_H
-
-extern __device__ unsigned long long elapsedBinary_Internal;
-extern __device__ unsigned long long counterCuda_Internal;
-
-#endif // CUDA_GLOBALS_PRIMARY_H
 namespace at { namespace native {
 
 template<int N>
@@ -161,19 +154,14 @@ struct BUnaryFunctor {
     func_t f;
     opmath_arg2_t b;
 };
-__device__ unsigned long long elapsed;
-__device__ unsigned long long counterCuda =0;
+
 
 // Though seemingly noop, this inserts casts from arg1_t to func_t's type
 // (which may be higher precision), as well as casts to return_t
 template <typename arg1_t, typename arg2_t, typename return_t, typename func_t>
 struct BinaryFunctor {
   __device__ return_t operator()(arg1_t a, arg2_t b) const {
-    counterCuda++;
-    unsigned long long start = clock64();
-    auto t= f(a, b);
-    elapsed += (clock64() - start);
-    return t;
+    return f(a, b);
   }
   BinaryFunctor(func_t f_): f(f_) {}
   private:
@@ -257,41 +245,12 @@ void opmath_symmetric_gpu_kernel_with_scalars(TensorIteratorBase& iter, const fu
     //std::cout << counter << " kernel\n";
     if (counter == 750)
     {
-      unsigned long long h_time = 0;
-      unsigned long long counter_local = 0;
-      unsigned long long elapsedBinary_Internal_host;
-      unsigned long long counterCuda_Internal_host = 0;
-      cudaMemcpyFromSymbol(
-          &h_time,
-          elapsed,
-          sizeof(unsigned long long),
-          0,
-          cudaMemcpyDeviceToHost);
-      cudaMemcpyFromSymbol(
-          &counter_local,
-          counterCuda,
-          sizeof(unsigned long long),
-          0,
-          cudaMemcpyDeviceToHost);
-      cudaMemcpyFromSymbol(
-          &elapsedBinary_Internal_host,
-          elapsedBinary_Internal,
-          sizeof(unsigned long long),
-          0,
-          cudaMemcpyDeviceToHost);
-      cudaMemcpyFromSymbol(
-          &counterCuda_Internal_host,
-          counterCuda_Internal,
-          sizeof(unsigned long long),
-          0,
-          cudaMemcpyDeviceToHost);
-    
       std::cout << "Elapsed time in clock ticks: " << h_time << " counter "
                 << counter_local << std::endl;
 
       std::cout << "Elapsed time in clock ticks: "
                 << elapsedBinary_Internal_host << " counter "
-                << counterCuda_Internal_host << std::endl;
+                << counterCuda_Internal << std::endl;
     }
     //PRINT_TIMER(gpu_kernel);
   } else {

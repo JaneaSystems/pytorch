@@ -17,9 +17,6 @@
 #ifndef CUDA_GLOBALS_PRIMARY_H
 #define CUDA_GLOBALS_PRIMARY_H
 
-extern __device__ unsigned long long elapsedBinary_Internal;
-extern __device__ unsigned long long counterCuda_Internal;
-
 #endif // CUDA_GLOBALS_PRIMARY_H
 namespace at {
 namespace native {
@@ -36,11 +33,7 @@ struct DivFunctor {
 template <typename T>
 struct MulFunctor {
   __device__ T operator()(T a, T b) const {
-    unsigned long long start = clock64();
-    auto t = a * b;
-    elapsedBinary_Internal += (clock64() - start);
-    counterCuda_Internal++;
-    return t;
+    return a * b;
   }
 };
 
