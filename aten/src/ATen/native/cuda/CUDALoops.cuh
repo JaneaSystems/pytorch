@@ -150,7 +150,8 @@ static inline void launch_vectorized_kernel(
           cudaMemcpyDeviceToHost);
       
       auto timeInSeconds = (double)h_time / (clockRatekHz * 1000);
-      std::cout << "num threads " << num_threads() << " clocks " << h_time
+      std::cout << "num threads " << num_threads() << " clocks time in sec"
+                << timeInSeconds
                 << "\n";
                 
       PRINT_TIMER(gpu_kernel_vectorize);
