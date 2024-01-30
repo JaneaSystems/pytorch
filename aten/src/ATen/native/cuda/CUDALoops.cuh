@@ -58,7 +58,7 @@ template <int vec_size, typename func_t, typename array_t>
 C10_LAUNCH_BOUNDS_1(num_threads())
 __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
 
-  unsigned long long startClock = clock64();
+  //unsigned long long startClock = clock64();
 
   using traits = function_traits<func_t>;
   int remaining = N - block_work_size() * blockIdx.x;
@@ -83,9 +83,9 @@ __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
         f, memory::policies::vectorized<vec_size, array_t>(data));
   }
 
-  unsigned long long endClock = clock64();
+  //unsigned long long endClock = clock64();
   // Calculate the elapsed clock cycles
-  device_time += (endClock - startClock);
+  //device_time += (endClock - startClock);
 }
 
 template <
@@ -133,16 +133,27 @@ static inline void launch_vectorized_kernel(
     END_TIMER(gpu_kernel_vectorize);
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
-      unsigned long long h_time = 0;
+      /* unsigned long long h_time = 0;
+      int deviceId;
+      cudaDeviceProp properties;
+
+      cudaGetDevice(&deviceId); // Get the current device ID
+      cudaGetDeviceProperties(&properties, deviceId);
+
+      // GPU clock rate in kHz
+      int clockRatekHz = properties.clockRate;
       cudaMemcpyFromSymbol(
           &h_time,
           device_time,
           sizeof(unsigned long long),
           0,
           cudaMemcpyDeviceToHost);
-      PRINT_TIMER(gpu_kernel_vectorize);
+      
+      auto timeInSeconds = (double)h_time / (clockRatekHz * 1000);
       std::cout << "num threads " << num_threads() << " clocks " << h_time
                 << "\n";
+                */
+      PRINT_TIMER(gpu_kernel_vectorize);
     }
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();
