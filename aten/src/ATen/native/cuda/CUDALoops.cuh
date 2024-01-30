@@ -53,10 +53,13 @@
 
 namespace at {
 namespace native {
-
+__device__ unsigned long long device_time;
 template <int vec_size, typename func_t, typename array_t>
 C10_LAUNCH_BOUNDS_1(num_threads())
 __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
+
+  unsigned long long startClock = clock64();
+
   using traits = function_traits<func_t>;
   int remaining = N - block_work_size() * blockIdx.x;
 
@@ -79,6 +82,10 @@ __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
     elementwise_kernel_helper(
         f, memory::policies::vectorized<vec_size, array_t>(data));
   }
+
+  unsigned long long endClock = clock64();
+  // Calculate the elapsed clock cycles
+  device_time += (endClock - startClock);
 }
 
 template <
@@ -126,8 +133,16 @@ static inline void launch_vectorized_kernel(
     END_TIMER(gpu_kernel_vectorize);
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
+      unsigned long long h_time = 0;
+      cudaMemcpyFromSymbol(
+          &h_time,
+          device_time,
+          sizeof(unsigned long long),
+          0,
+          cudaMemcpyDeviceToHost);
       PRINT_TIMER(gpu_kernel_vectorize);
-      std::cout << "num threads " << num_threads();
+      std::cout << "num threads " << num_threads() << " clocks " << h_time
+                << "\n";
     }
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();
