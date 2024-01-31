@@ -54,10 +54,11 @@
 namespace at {
 namespace native {
 __device__ unsigned long long device_time;
+__device__ unsigned long long counter_vectorized_elementwise_kernel;
 template <int vec_size, typename func_t, typename array_t>
 C10_LAUNCH_BOUNDS_1(num_threads())
 __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
-
+  counter_vectorized_elementwise_kernel++;
   unsigned long long startClock = clock64();
 
   using traits = function_traits<func_t>;
@@ -134,6 +135,7 @@ static inline void launch_vectorized_kernel(
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
       unsigned long long h_time = 0;
+      unsigned long long counter_vectorized_elementwise_kernel_local = 0;
       int deviceId;
       cudaDeviceProp properties;
 
@@ -148,9 +150,17 @@ static inline void launch_vectorized_kernel(
           sizeof(unsigned long long),
           0,
           cudaMemcpyDeviceToHost);
+      int clockRatekHz = properties.clockRate;
+      cudaMemcpyFromSymbol(
+          &counter_vectorized_elementwise_kernel_local,
+          counter_vectorized_elementwise_kernel,
+          sizeof(unsigned long long),
+          0,
+          cudaMemcpyDeviceToHost);
       
       auto timeInSeconds = (double)h_time / (clockRatekHz * 1000);
-      std::cout << "num threads " << num_threads() << " clocks time in sec"
+      std::cout << " counter " << counter_vectorized_elementwise_kernel_local
+                << " clocks time in sec"
                 << timeInSeconds
                 << "\n";
                 
