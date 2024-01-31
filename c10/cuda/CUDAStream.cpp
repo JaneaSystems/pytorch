@@ -240,9 +240,6 @@ CUDAStream CUDAStreamForId(DeviceIndex device_index, StreamId stream_id) {
 
 // See Note [StreamId assignment]
 cudaStream_t CUDAStream::stream() const {
-  static int counter = 0;
-  counter++;
-  BEGIN_TIMER(cuda_stream_stream)
   c10::DeviceIndex device_index = stream_.device_index();
   StreamId stream_id = stream_.id();
   StreamIdType st = streamIdType(stream_id);
@@ -260,8 +257,6 @@ cudaStream_t CUDAStream::stream() const {
     return nullptr;
   } else if (st.isExt()) {
     auto t = reinterpret_cast<cudaStream_t>(stream_id);
-    END_TIMER(cuda_stream_stream);
-    PRINT_TIMER(cuda_stream_stream);
     return t;
   } else {
     auto streamType = st.getStreamType();
@@ -275,12 +270,6 @@ cudaStream_t CUDAStream::stream() const {
         streamType,
         ")");
     auto test = streams[st.getStreamType() - 1][device_index][si];
-    END_TIMER(cuda_stream_stream)
-    PRINT_TIMER(cuda_stream_stream);
-        if (counter == 750)
-        {
-      PRINT_TIMER(cuda_stream_stream);
-    }
     return test;
   }
 }
