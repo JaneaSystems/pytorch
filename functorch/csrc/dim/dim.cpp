@@ -1518,16 +1518,21 @@ struct PyInstDecoder {
     // On Windows, _PyOpcode_Caches and _PyOpcode_Deopt are private symbols
     // See https://github.com/pytorch/pytorch/issues/93854
     void next() {
+        std::cout << "ionut " << opcode() << "\n";
     #if IS_PYTHON_3_11_PLUS && !defined(_WIN32)
         offset_ += _PyOpcode_Caches[opcode()];
+        std::cout << "ionut offset " << offset_ << "\n";
     #endif
         offset_ += 1;
     }
     int opcode() {
+        
         auto r = _Py_OPCODE(code_[offset_]);
+        std::cout << "ionut2 " << r << "\n";
     #if IS_PYTHON_3_11_PLUS && !defined(_WIN32)
         r = _PyOpcode_Deopt[r];
     #endif
+        std::cout << "ionut2 " << r << "\n";
         return r;
     }
     int oparg() {
