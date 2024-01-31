@@ -150,7 +150,6 @@ static inline void launch_vectorized_kernel(
           sizeof(unsigned long long),
           0,
           cudaMemcpyDeviceToHost);
-      int clockRatekHz = properties.clockRate;
       cudaMemcpyFromSymbol(
           &counter_vectorized_elementwise_kernel_local,
           counter_vectorized_elementwise_kernel,
