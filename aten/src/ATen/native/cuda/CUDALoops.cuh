@@ -101,8 +101,8 @@ static inline void launch_vectorized_kernel(
   if (vec_size == 4) {
     counter++;
     START_TIMER(gpu_kernel_vectorize);
-    vectorized_elementwise_kernel<4, func_t, array_t>
-        <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
+    //vectorized_elementwise_kernel<4, func_t, array_t>
+       // <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
     END_TIMER(gpu_kernel_vectorize);
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
