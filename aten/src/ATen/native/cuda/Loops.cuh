@@ -124,7 +124,7 @@ void gpu_kernel(TensorIteratorBase& iter, const func_t& f) {
     return;
   }
 
-  //gpu_kernel_impl(iter, f);
+  gpu_kernel_impl(iter, f);
 }
 
 template<typename arg1_t, typename arg2_t, typename return_t, typename func_t>
