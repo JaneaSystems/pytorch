@@ -111,6 +111,7 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t data) {
+      return;
   DEFINE_TIMER(gpu_kernel_vectorize);
   
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
@@ -292,7 +293,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   bool contiguous = iter.is_contiguous();
 
   if (contiguous) {
-    return launch_vectorized_kernel(numel, f, data);
+    return;// launch_vectorized_kernel(numel, f, data);
   }
   auto offset_calc = ::make_offset_calculator<traits::arity + 1>(iter);
   constexpr int unroll_factor = sizeof(arg0_t) >= 4 ? 2 : 4;
