@@ -121,13 +121,13 @@ static inline void launch_vectorized_kernel(
   DEFINE_TIMER(gpu_kernel_vectorize);
   if (vec_size == 4) {
     counter++;
-    //START_TIMER(gpu_kernel_vectorize);
+    START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4, func_t, array_t>
         <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
-    //END_TIMER(gpu_kernel_vectorize);
+    END_TIMER(gpu_kernel_vectorize);
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
-      //PRINT_TIMER(gpu_kernel_vectorize);
+      PRINT_TIMER(gpu_kernel_vectorize);
       unsigned long long h_time = 0;
       unsigned long long counter_vectorized_elementwise_kernel_local = 0;
       int deviceId;
