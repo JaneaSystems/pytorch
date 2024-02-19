@@ -111,20 +111,24 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t data) {
-
+  DEFINE_TIMER(gpu_kernel_vectorize);
+  START_TIMER(gpu_kernel_vectorize);
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
   using traits = function_traits<func_t>;
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
   auto stream = at::cuda::getCurrentCUDAStream();
   int vec_size = memory::can_vectorize_up_to<func_t>(data);
   static int counter = 0;
-  DEFINE_TIMER(gpu_kernel_vectorize);
+  
   if (vec_size == 4) {
     counter++;
-    START_TIMER(gpu_kernel_vectorize);
+    
     vectorized_elementwise_kernel<4, func_t, array_t>
         <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
-    END_TIMER(gpu_kernel_vectorize);
+    C10_CUDA_KERNEL_LAUNCH_CHECK();
+  }
+
+      END_TIMER(gpu_kernel_vectorize);
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
       PRINT_TIMER(gpu_kernel_vectorize);
@@ -159,26 +163,6 @@ static inline void launch_vectorized_kernel(
                 
       
     }
-
-    C10_CUDA_KERNEL_LAUNCH_CHECK();
-  }
-    else if (vec_size == 2){
-      vectorized_elementwise_kernel<2, func_t, array_t>
-        <<<grid, num_threads(), 0, stream>>>(N, f, data);
-    C10_CUDA_KERNEL_LAUNCH_CHECK();
-  }
-  else if (vec_size == 1) {
-      auto input_calc = TrivialOffsetCalculator<traits::arity>();
-      auto output_calc = TrivialOffsetCalculator<1>();
-      auto loader = memory::LoadWithoutCast();
-      auto storer = memory::StoreWithoutCast();
-      unrolled_elementwise_kernel<func_t, array_t>
-          <<<grid, num_threads(), 0, stream>>>(
-              N, f, data, input_calc, output_calc, loader, storer);
-      C10_CUDA_KERNEL_LAUNCH_CHECK();
-  } else {
-      TORCH_INTERNAL_ASSERT(false, "Unexpected vectorization size");
-  }
 }
 
 template <
