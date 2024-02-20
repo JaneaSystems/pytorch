@@ -55,7 +55,7 @@ namespace at {
 namespace native {
 __device__ unsigned long long device_time;
 __device__ unsigned long long counter_vectorized_elementwise_kernel;
-template <int vec_size, typename func_t>
+template <int vec_size>
 
 __global__ void vectorized_elementwise_kernel(int N) {
 
