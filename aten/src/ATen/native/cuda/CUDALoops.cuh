@@ -293,6 +293,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   bool contiguous = iter.is_contiguous();
 
   if (contiguous) {
+    return;
     static int counter=0;
     counter++;
     at::detail::Array<char*, 1> data2;
