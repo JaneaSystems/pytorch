@@ -293,7 +293,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   bool contiguous = iter.is_contiguous();
 
   if (contiguous) {
-    at::detail::Array<char*, ntensors> data2;
+    at::detail::Array<char*, 1> data2;
   launch_vectorized_kernel(numel, f, data2);
   }
   auto offset_calc = ::make_offset_calculator<traits::arity + 1>(iter);
