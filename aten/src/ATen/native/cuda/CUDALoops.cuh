@@ -132,6 +132,7 @@ static inline void launch_vectorized_kernel(
     //std::cout << counter << " kernel\n";
     if (counter == 750) {
       PRINT_TIMER(gpu_kernel_vectorize);
+  }
 }
 
 template <
