@@ -111,7 +111,6 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t& data) {
-      return;
   DEFINE_TIMER(gpu_kernel_vectorize);
   
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
