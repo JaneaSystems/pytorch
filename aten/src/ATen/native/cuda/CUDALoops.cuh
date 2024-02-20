@@ -110,7 +110,7 @@ template <typename func_t, typename array_t>
 static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
-    array_t data) {
+    array_t& data) {
       return;
   DEFINE_TIMER(gpu_kernel_vectorize);
   
