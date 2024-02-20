@@ -55,9 +55,9 @@ namespace at {
 namespace native {
 __device__ unsigned long long device_time;
 __device__ unsigned long long counter_vectorized_elementwise_kernel;
-template <int vec_size, typename func_t, typename array_t>
+template <int vec_size, typename func_t>
 C10_LAUNCH_BOUNDS_1(num_threads())
-__global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
+__global__ void vectorized_elementwise_kernel(int N, func_t f) {
 
 }
 
@@ -102,8 +102,8 @@ static inline void launch_vectorized_kernel(
   if (vec_size == 4) {
     counter++;
     START_TIMER(gpu_kernel_vectorize);
-    vectorized_elementwise_kernel<4, func_t, array_t>
-        <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
+    vectorized_elementwise_kernel<4, func_t>
+        <<<grid, num_threads(), 0, nullptr>>>(N, f);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
