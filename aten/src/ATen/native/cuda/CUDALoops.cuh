@@ -294,7 +294,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
 
   if (contiguous) {
     at::detail::Array<char*, 1> data2;
-  launch_vectorized_kernel(numel, f, data2);
+  return launch_vectorized_kernel(numel, f, data2);
   }
   auto offset_calc = ::make_offset_calculator<traits::arity + 1>(iter);
   constexpr int unroll_factor = sizeof(arg0_t) >= 4 ? 2 : 4;
