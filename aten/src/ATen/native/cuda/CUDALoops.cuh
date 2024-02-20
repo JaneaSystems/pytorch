@@ -109,8 +109,7 @@ __global__ void unrolled_elementwise_kernel(
 template <typename func_t, typename array_t>
 static inline void launch_vectorized_kernel(
     int64_t N,
-    const func_t& f,
-    array_t& data) {
+    const func_t& f) {
       return;
   DEFINE_TIMER(gpu_kernel_vectorize);
   
@@ -118,7 +117,7 @@ static inline void launch_vectorized_kernel(
   using traits = function_traits<func_t>;
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
   auto stream = at::cuda::getCurrentCUDAStream();
-  int vec_size = memory::can_vectorize_up_to<func_t>(data);
+  int vec_size =4;// memory::can_vectorize_up_to<func_t>(data);
   static int counter = 0;
   
   if (vec_size == 4) {
@@ -293,7 +292,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   bool contiguous = iter.is_contiguous();
 
   if (contiguous) {
-    launch_vectorized_kernel(numel, f, data);
+    launch_vectorized_kernel(numel, f);
   }
   auto offset_calc = ::make_offset_calculator<traits::arity + 1>(iter);
   constexpr int unroll_factor = sizeof(arg0_t) >= 4 ? 2 : 4;
