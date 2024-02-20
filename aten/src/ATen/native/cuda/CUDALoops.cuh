@@ -122,9 +122,8 @@ static inline void launch_vectorized_kernel(
   
   if (vec_size == 4) {
     counter++;
-    
-    //vectorized_elementwise_kernel<4, func_t, array_t>
-     //   <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
+    vectorized_elementwise_kernel<4, func_t, array_t>
+        <<<grid, num_threads(), 0, nullptr>>>(N, f, data);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
 
