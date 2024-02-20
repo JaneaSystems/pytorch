@@ -284,16 +284,17 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   TORCH_INTERNAL_ASSERT(!needs_dynamic_casting<func_t>::check(iter));
 
   at::detail::Array<char*, ntensors> data;
-  //for (int i = 0; i < ntensors; i++) {
-   // data[i] = (char*)iter.data_ptr(i);
-  //}
+  for (int i = 0; i < ntensors; i++) {
+    data[i] = (char*)iter.data_ptr(i);
+  }
 
   int64_t numel = iter.numel();
 
   bool contiguous = iter.is_contiguous();
 
   if (contiguous) {
-    launch_vectorized_kernel(numel, f, data);
+    at::detail::Array<char*, ntensors> data2;
+  launch_vectorized_kernel(numel, f, data2);
   }
   auto offset_calc = ::make_offset_calculator<traits::arity + 1>(iter);
   constexpr int unroll_factor = sizeof(arg0_t) >= 4 ? 2 : 4;
