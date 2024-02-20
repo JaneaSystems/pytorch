@@ -91,16 +91,20 @@ static inline void launch_vectorized_kernel(
     const func_t& f,
     array_t& data) {
   DEFINE_TIMER(gpu_kernel_vectorize);
-  
+  DEFINE_TIMER(test_num_threads);
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
   using traits = function_traits<func_t>;
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
   auto stream = at::cuda::getCurrentCUDAStream();
   int vec_size = memory::can_vectorize_up_to<func_t>(data);
   static int counter = 0;
-  
+  static int total =0;
   if (vec_size == 4) {
     counter++;
+    START_TIMER(test_num_threads);
+    int x= num_threads();
+    total==x; 
+    END_TIMER(test_num_threads);
     START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
         <<<grid, num_threads(), 0, nullptr>>>(N);
@@ -109,9 +113,11 @@ static inline void launch_vectorized_kernel(
   }
 
       
-    //std::cout << counter << " kernel\n";
+    
     if (counter == 750) {
       PRINT_TIMER(gpu_kernel_vectorize);
+      PRINT_TIMER(test_num_threads);
+      std::cout << counter << " total\n";
   }
 }
 
