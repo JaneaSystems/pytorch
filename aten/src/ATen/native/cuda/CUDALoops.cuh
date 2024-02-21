@@ -107,12 +107,12 @@ static inline void launch_vectorized_kernel(
     END_TIMER(test_num_threads);
     START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
-        <<<grid, 128, 0, nullptr>>>(4000);
+        <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
 
-      //std::cout << " num threads " << num_threads() << " total " << N << "\n";
+      //std::cout << " num threads " << grid << " total " << N << "\n";
     
     if (counter == 750) {
       PRINT_TIMER(gpu_kernel_vectorize);
