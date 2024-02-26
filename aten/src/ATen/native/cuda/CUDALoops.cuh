@@ -61,6 +61,18 @@ __global__ void vectorized_elementwise_kernel(int N) {
 
 }
 
+void benchmarkTest()
+{
+  DEFINE_TIMER(ionut)
+  for(int i =0; i<750; i++)
+  {
+    START_TIMER(ionut);
+    vectorized_elementwise_kernel<4>
+        <<<8, 128, 0>>>(4000);
+    END_TIMER(ionut);
+  }
+}
+
 template <
     typename func_t,
     typename array_t,
@@ -99,6 +111,10 @@ static inline void launch_vectorized_kernel(
   int vec_size = memory::can_vectorize_up_to<func_t>(data);
   static int counter = 0;
   static int total =0;
+  if(counter ==0)
+  {
+    benchmarkTest();
+  }
   if (vec_size == 4) {
     counter++;
     START_TIMER(test_num_threads);
