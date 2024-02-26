@@ -80,7 +80,7 @@ inline void benchmarkTest()
     START_TIMER(bench2);
     vectorized_elementwise_kernel<4>
         <<<7813, 128, 0, nullptr>>>(400000);
-    END_TIMER(bench);
+    END_TIMER(bench2);
   }
 
   PRINT_TIMER(bench2);
