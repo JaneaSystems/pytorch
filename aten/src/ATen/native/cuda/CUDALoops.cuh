@@ -68,11 +68,22 @@ inline void benchmarkTest()
   {
     START_TIMER(bench);
     vectorized_elementwise_kernel<4>
-        <<<8, 128, 0>>>(4000);
+        <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(bench);
   }
 
   PRINT_TIMER(bench);
+
+  DEFINE_TIMER(bench2)
+  for(int i =0; i<750; i++)
+  {
+    START_TIMER(bench2);
+    vectorized_elementwise_kernel<4>
+        <<<7813, 128, 0, nullptr>>>(400000);
+    END_TIMER(bench);
+  }
+
+  PRINT_TIMER(bench2);
 }
 
 template <
