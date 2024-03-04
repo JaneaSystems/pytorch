@@ -136,7 +136,7 @@ static inline void launch_vectorized_kernel(
   static int total =0;
   if(counter ==0)
   {
-    benchmarkTest();
+    //benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
