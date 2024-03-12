@@ -73,27 +73,6 @@ inline void benchmarkTest()
   }
 
   PRINT_TIMER(bench);
-
-  DEFINE_TIMER(bench2)
-  for(int i =0; i<750; i++)
-  {
-    START_TIMER(bench2);
-    vectorized_elementwise_kernel<4>
-        <<<7813, 128, 0, nullptr>>>(400000);
-    END_TIMER(bench2);
-  }
-
-  PRINT_TIMER(bench2);
-
-  DEFINE_TIMER(bench3)
-  for(int i =0; i<750; i++)
-  {
-    START_TIMER(bench3);
-    vectorized_elementwise_kernel<4>
-        <<<7813, 128, 0, nullptr>>>(400000);
-    END_TIMER(bench3);
-  }
-  PRINT_TIMER(bench3);
 }
 
 template <
@@ -136,7 +115,7 @@ static inline void launch_vectorized_kernel(
   static int total =0;
   if(counter ==0)
   {
-    //benchmarkTest();
+    benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
