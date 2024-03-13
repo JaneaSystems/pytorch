@@ -63,16 +63,16 @@ __global__ void vectorized_elementwise_kernel(int N) {
 
 inline void benchmarkTest()
 {
-  DEFINE_TIMER(bench)
+  DEFINE_TIMER(ionut_one_iteration)
   for(int i =0; i<1; i++)
   {
-    START_TIMER(bench);
+    START_TIMER(ionut_one_iteration);
     vectorized_elementwise_kernel<4>
         <<<8, 128, 0, nullptr>>>(4000);
-    END_TIMER(bench);
+    END_TIMER(ionut_one_iteration);
   }
 
-  PRINT_TIMER(bench);
+  PRINT_TIMER(ionut_one_iteration);
 }
 
 template <
