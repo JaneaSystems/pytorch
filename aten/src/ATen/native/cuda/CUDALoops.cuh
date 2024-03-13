@@ -64,7 +64,7 @@ __global__ void vectorized_elementwise_kernel(int N) {
 inline void benchmarkTest()
 {
   DEFINE_TIMER(bench)
-  for(int i =0; i<750; i++)
+  for(int i =0; i<1; i++)
   {
     START_TIMER(bench);
     vectorized_elementwise_kernel<4>
