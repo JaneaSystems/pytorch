@@ -282,6 +282,7 @@ cudaError_t SetDevice(int device) {
   if (device == cur_device) {
     return cudaSuccess;
   }
+  std::cout << "ionut device " << device << "\n";
   return cudaSetDevice(device);
 }
 
