@@ -73,6 +73,17 @@ inline void benchmarkTest()
   }
 
   PRINT_TIMER(ionut_one_iteration);
+
+  DEFINE_TIMER(ionut_750_iteration)
+  for(int i =0; i<750; i++)
+  {
+    START_TIMER(ionut_750_iteration);
+    vectorized_elementwise_kernel<4>
+        <<<8, 128, 0, nullptr>>>(4000);
+    END_TIMER(ionut_750_iteration);
+  }
+
+  PRINT_TIMER(ionut_750_iteration);
 }
 
 template <
