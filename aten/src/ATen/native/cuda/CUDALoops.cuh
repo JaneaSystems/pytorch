@@ -115,7 +115,7 @@ static inline void launch_vectorized_kernel(
   static int total =0;
   if(counter ==0)
   {
-    benchmarkTest();
+    //benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
@@ -132,8 +132,8 @@ static inline void launch_vectorized_kernel(
 
       //std::cout << " num threads " << grid << " total " << N << "\n";
     
-    if (counter == 750) {
-      std::cout << "ionut " << grid << " " <<  num_threads() << " " <<  N<< "\n";
+    if (counter % 750 ==0 || counter ==1) {
+      std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
       PRINT_TIMER(gpu_kernel_vectorize);
       PRINT_TIMER(test_num_threads);
       
