@@ -131,7 +131,7 @@ static inline void launch_vectorized_kernel(
     if (counter % 750 ==0 || counter ==1) {
       std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
       PRINT_TIMER(gpu_kernel_vectorize);
-      PRINT_TIMER(test_num_threads);
+      //PRINT_TIMER(test_num_threads);
       
   }
 }
