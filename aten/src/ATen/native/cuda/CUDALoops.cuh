@@ -119,13 +119,9 @@ static inline void launch_vectorized_kernel(
   }
   if (vec_size == 4) {
     counter++;
-    START_TIMER(test_num_threads);
-    int x= num_threads();
-    total==x; 
-    END_TIMER(test_num_threads);
     START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
-        <<<16, 256, 0>>>(4000);
+        <<<8, 128, 0>>>(4000);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
