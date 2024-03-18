@@ -6,7 +6,10 @@ namespace c10::impl {
 std::atomic<const DeviceGuardImplInterface*>
     device_guard_impl_registry[static_cast<size_t>(
         DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES)];
-
+std::atomic<const DeviceGuardImplInterface*>* get_device_guard_impl_registry()
+{
+  return device_guard_impl_registry;
+}
 DeviceGuardImplRegistrar::DeviceGuardImplRegistrar(
     DeviceType type,
     const DeviceGuardImplInterface* impl) {

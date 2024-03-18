@@ -2,6 +2,7 @@
 #include <c10/macros/Macros.h>
 
 #include <limits>
+#include <iostream>
 
 namespace c10::cuda {
 
@@ -282,6 +283,7 @@ cudaError_t SetDevice(int device) {
   if (device == cur_device) {
     return cudaSuccess;
   }
+  std::cout << "ionut device " << device << "\n";
   return cudaSetDevice(device);
 }
 

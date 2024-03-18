@@ -291,10 +291,10 @@ struct NoOpDeviceGuardImpl final : public DeviceGuardImplInterface {
 // putting them in the registry.  This is done by deleting the destructor
 // on DeviceGuardImplInterface.
 // NOLINTNEXTLINE(*c-arrays*)
-extern C10_API std::atomic<const DeviceGuardImplInterface*>
+extern std::atomic<const DeviceGuardImplInterface*>
     device_guard_impl_registry[static_cast<size_t>(
         DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES)];
-
+extern C10_API std::atomic<const DeviceGuardImplInterface*>* get_device_guard_impl_registry();
 // I can't conveniently use c10/util/Registry.h for the following reason:
 // c10/util/Registry.h gives me a slow way of Create'ing a object of some
 // interface from the registry, but no way of quickly accessing an already
@@ -320,7 +320,7 @@ inline const DeviceGuardImplInterface* getDeviceGuardImpl(DeviceType type) {
   //   https://fb.workplace.com/groups/llvm.gcc/permalink/4053565044692080/
   // for more details
   static_assert(sizeof(DeviceType) == 1, "DeviceType is not 8-bit");
-  auto p = device_guard_impl_registry[static_cast<size_t>(type) & 0xFF].load();
+  auto p = get_device_guard_impl_registry()[static_cast<size_t>(type) & 0xFF].load();
 
   // This seems to be the first place where you make use of a device
   // when you pass devices to factory functions.  Give a nicer error
@@ -330,7 +330,7 @@ inline const DeviceGuardImplInterface* getDeviceGuardImpl(DeviceType type) {
 }
 
 inline bool hasDeviceGuardImpl(DeviceType type) {
-  return device_guard_impl_registry[static_cast<size_t>(type)].load();
+  return get_device_guard_impl_registry()[static_cast<size_t>(type)].load();
 }
 
 } // namespace impl

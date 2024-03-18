@@ -814,7 +814,7 @@ void set_device(int device) {
   if (device != CPU_DEVICE) {
     for (const auto i : c10::irange(static_cast<size_t>(
              c10::DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES))) {
-      auto* impl = c10::impl::device_guard_impl_registry[i].load();
+      auto* impl = c10::impl::get_device_guard_impl_registry()[i].load();
       if (impl && device < impl->deviceCount()) {
         impl->setDevice(at::Device(
             static_cast<c10::DeviceType>(i),
@@ -1492,7 +1492,11 @@ auto Engine::start_device_threads() -> void {
   // Second, create special threads for each non-CPU device
   // See Note [Allocating GPUs to autograd threads]
   c10::DeviceIndex num_devices = 0;
-  for (const auto& impl_atomic : c10::impl::device_guard_impl_registry) {
+  size_t max_device_types = static_cast<size_t>(DeviceType::COMPILE_TIME_MAX_DEVICE_TYPES);
+
+  for (size_t i = 0; i < max_device_types; ++i) {
+    const auto& impl_atomic = c10::impl::get_device_guard_impl_registry()[i]; 
+  //for (const auto& impl_atomic : c10::impl::device_guard_impl_registry) {
     auto* impl = impl_atomic.load();
     // Only record the number of devices for device that don't run on the
     // cpu ready queue.
