@@ -130,7 +130,7 @@ static inline void launch_vectorized_kernel(
 
     // Choose which GPU to run on, change this on a multi-GPU system.
     //cudaStatus = cudaSetDevice(0);
-    benchmarkTest();
+    //benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
