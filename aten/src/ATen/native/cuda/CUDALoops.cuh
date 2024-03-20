@@ -115,8 +115,8 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t& data) {
-  DEFINE_TIMER(gpu_kernel_vectorize);
-  DEFINE_TIMER(test_num_threads);
+  //DEFINE_TIMER(gpu_kernel_vectorize);
+  //DEFINE_TIMER(test_num_threads);
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
   using traits = function_traits<func_t>;
   int64_t grid = (N + block_work_size() - 1) / block_work_size();
@@ -134,18 +134,18 @@ static inline void launch_vectorized_kernel(
   }
   if (vec_size == 4) {
     counter++;
-    START_TIMER(gpu_kernel_vectorize);
+    //START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
         <<<8, 128, 0>>>(4000);
-    END_TIMER(gpu_kernel_vectorize);
+    //END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
 
       //std::cout << " num threads " << grid << " total " << N << "\n";
     
     if (counter % 750 ==0 || counter ==1) {
-      std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
-      PRINT_TIMER(gpu_kernel_vectorize);
+      //std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
+      //PRINT_TIMER(gpu_kernel_vectorize);
       //PRINT_TIMER(test_num_threads);
       
   }
