@@ -58,7 +58,28 @@ __device__ unsigned long long counter_vectorized_elementwise_kernel;
 template <int vec_size>
 
 __global__ void vectorized_elementwise_kernel(int N) {
+ using traits = function_traits<func_t>;
+  int remaining = N - block_work_size() * blockIdx.x;
 
+  if (remaining < block_work_size()) { // if this block handles the reminder,
+                                       // just do a naive unrolled loop
+    auto input_calc = TrivialOffsetCalculator<traits::arity>();
+    auto output_calc = TrivialOffsetCalculator<1>();
+    auto loader = memory::LoadWithoutCast();
+    auto storer = memory::StoreWithoutCast();
+    auto policy = memory::policies::unroll<
+        array_t,
+        decltype(input_calc),
+        decltype(output_calc),
+        memory::LoadWithoutCast,
+        memory::StoreWithoutCast>(
+        data, remaining, input_calc, output_calc, loader, storer);
+    elementwise_kernel_helper(f, policy);
+  } else { // if this block has a full `block_work_size` data to handle, use
+           // vectorized memory access
+    elementwise_kernel_helper(
+        f, memory::policies::vectorized<vec_size, array_t>(data));
+  }
 }
 
 inline void benchmarkTest()
@@ -115,7 +136,7 @@ static inline void launch_vectorized_kernel(
     int64_t N,
     const func_t& f,
     array_t& data) {
-  //DEFINE_TIMER(gpu_kernel_vectorize);
+  DEFINE_TIMER(gpu_kernel_vectorize);
   //DEFINE_TIMER(test_num_threads);
   TORCH_INTERNAL_ASSERT(N > 0 && N <= std::numeric_limits<int32_t>::max());
   using traits = function_traits<func_t>;
@@ -134,10 +155,10 @@ static inline void launch_vectorized_kernel(
   }
   if (vec_size == 4) {
     counter++;
-    //START_TIMER(gpu_kernel_vectorize);
+    START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
         <<<8, 128, 0>>>(4000);
-    //END_TIMER(gpu_kernel_vectorize);
+    END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
 
@@ -145,7 +166,7 @@ static inline void launch_vectorized_kernel(
     
     if (counter % 750 ==0 || counter ==1) {
       //std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
-      //PRINT_TIMER(gpu_kernel_vectorize);
+      PRINT_TIMER(gpu_kernel_vectorize);
       //PRINT_TIMER(test_num_threads);
       
   }
@@ -281,7 +302,7 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
     static int counter=0;
     counter++;
     at::detail::Array<char*, 1> data2;
-    //DEFINE_TIMER(ionut1);
+    DEFINE_TIMER(ionut1);
     //DEFINE_TIMER(ionut2);
     //START_TIMER(ionut1);
     launch_vectorized_kernel(numel, f, data);
