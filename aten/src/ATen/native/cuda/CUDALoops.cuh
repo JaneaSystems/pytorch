@@ -55,9 +55,8 @@ namespace at {
 namespace native {
 __device__ unsigned long long device_time;
 __device__ unsigned long long counter_vectorized_elementwise_kernel;
-template <int vec_size>
-
-__global__ void vectorized_elementwise_kernel(int N) {
+template <int vec_size, typename func_t, typename array_t>
+__global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data)  {
  using traits = function_traits<func_t>;
   int remaining = N - block_work_size() * blockIdx.x;
 
@@ -88,8 +87,8 @@ inline void benchmarkTest()
   for(int i =0; i<1; i++)
   {
     START_TIMER(ionut_one_iteration);
-    vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, nullptr>>>(4000);
+    //vectorized_elementwise_kernel<4>
+     //   <<<8, 128, 0, nullptr>>>(4000, nullptr);
     END_TIMER(ionut_one_iteration);
   }
 
@@ -99,8 +98,8 @@ inline void benchmarkTest()
   for(int i =0; i<750; i++)
   {
     START_TIMER(ionut_750_iteration);
-    vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, nullptr>>>(4000);
+    //vectorized_elementwise_kernel<4>
+   //     <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_750_iteration);
   }
 
@@ -156,8 +155,8 @@ static inline void launch_vectorized_kernel(
   if (vec_size == 4) {
     counter++;
     START_TIMER(gpu_kernel_vectorize);
-    vectorized_elementwise_kernel<4>
-        <<<8, 128, 0>>>(4000);
+    //vectorized_elementwise_kernel<4>
+   //     <<<8, 128, 0>>>(N, f, data);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
