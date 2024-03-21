@@ -155,8 +155,8 @@ static inline void launch_vectorized_kernel(
   if (vec_size == 4) {
     counter++;
     START_TIMER(gpu_kernel_vectorize);
-    //vectorized_elementwise_kernel<4>
-   //     <<<8, 128, 0>>>(N, f, data);
+    vectorized_elementwise_kernel<4, func_t, array_t>
+        <<<8, 128, 0, stream>>>(N, f, data);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
