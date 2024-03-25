@@ -62,6 +62,7 @@ __global__ void vectorized_elementwise_kernel(int N)  {
 
 inline void benchmarkTest()
 {
+  /*
   DEFINE_TIMER(ionut_one_iteration)
   for(int i =0; i<1; i++)
   {
@@ -83,6 +84,7 @@ inline void benchmarkTest()
   }
 
   PRINT_TIMER(ionut_750_iteration);
+  */
 }
 
 template <
