@@ -66,8 +66,8 @@ inline void benchmarkTest()
   for(int i =0; i<1; i++)
   {
     START_TIMER(ionut_one_iteration);
-    vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, nullptr>>>(4000);
+    //vectorized_elementwise_kernel<4>
+        //<<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_one_iteration);
   }
 
@@ -77,8 +77,8 @@ inline void benchmarkTest()
   for(int i =0; i<750; i++)
   {
     START_TIMER(ionut_750_iteration);
-    vectorized_elementwise_kernel<4>
-       <<<8, 128, 0, nullptr>>>(4000);
+    //vectorized_elementwise_kernel<4>
+     //  <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_750_iteration);
   }
 
@@ -135,7 +135,7 @@ static inline void launch_vectorized_kernel(
     counter++;
     START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, nullptr>>>(N);
+        <<<8, 128, 0, stream>>>(N);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
