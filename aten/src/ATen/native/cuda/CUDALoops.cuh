@@ -67,7 +67,7 @@ inline void benchmarkTest()
   {
     START_TIMER(ionut_one_iteration);
     vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, nullptr>>>(4000, nullptr);
+        <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_one_iteration);
   }
 
@@ -81,7 +81,6 @@ inline void benchmarkTest()
        <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_750_iteration);
   }
-  return;
 
   PRINT_TIMER(ionut_750_iteration);
 }
