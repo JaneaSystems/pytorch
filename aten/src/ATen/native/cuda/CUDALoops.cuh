@@ -151,26 +151,26 @@ static inline void launch_vectorized_kernel(
     cudaError_t cudaStatus;
 
     // Choose which GPU to run on, change this on a multi-GPU system.
-    //cudaStatus = cudaSetDevice(0);
+    cudaStatus = cudaSetDevice(0);
     //benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
-    START_TIMER(gpu_kernel_vectorize);
+    //START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4, func_t, array_t>
           <<<grid, num_threads(), 0, stream>>>(N, f, data);
-    END_TIMER(gpu_kernel_vectorize);
+    //END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
 
       //std::cout << " num threads " << grid << " total " << N << "\n";
     
-    if (counter % 750 ==0 || counter ==1) {
+    //if (counter % 750 ==0 || counter ==1) {
       //std::cout << "ionut grid" << grid << " num_threads " <<  num_threads() << " " <<  N<< " counter " << counter << "\n";
-      PRINT_TIMER(gpu_kernel_vectorize);
+      //PRINT_TIMER(gpu_kernel_vectorize);
       //PRINT_TIMER(test_num_threads);
       
-  }
+  //}
 }
 
 template <
@@ -305,15 +305,15 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
     at::detail::Array<char*, 1> data2;
     DEFINE_TIMER(ionut1);
     //DEFINE_TIMER(ionut2);
-    //START_TIMER(ionut1);
+    START_TIMER(ionut1);
     launch_vectorized_kernel(numel, f, data);
-    //END_TIMER(ionut1);
+    END_TIMER(ionut1);
     //START_TIMER(ionut2);
     //launch_vectorized_kernel(numel, f, data2);
    // END_TIMER(ionut2)
     if(counter == 750)
     {
-      //PRINT_TIMER(ionut1);
+      PRINT_TIMER(ionut1);
       //PRINT_TIMER(ionut2);
     }
    return;
