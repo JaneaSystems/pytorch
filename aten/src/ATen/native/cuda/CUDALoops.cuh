@@ -53,9 +53,9 @@
 
 namespace at {
 namespace native {
-__device__ unsigned long long device_time;
-__device__ unsigned long long counter_vectorized_elementwise_kernel;
+
 template <int vec_size, typename func_t, typename array_t>
+C10_LAUNCH_BOUNDS_1(num_threads())
 __global__ void vectorized_elementwise_kernel(int N, func_t f, array_t data) {
   using traits = function_traits<func_t>;
   int remaining = N - block_work_size() * blockIdx.x;
