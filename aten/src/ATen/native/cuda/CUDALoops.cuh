@@ -66,8 +66,8 @@ inline void benchmarkTest()
   for(int i =0; i<1; i++)
   {
     START_TIMER(ionut_one_iteration);
-    //vectorized_elementwise_kernel<4>
-     //   <<<8, 128, 0, nullptr>>>(4000, nullptr);
+    vectorized_elementwise_kernel<4>
+        <<<8, 128, 0, nullptr>>>(4000, nullptr);
     END_TIMER(ionut_one_iteration);
   }
 
@@ -77,10 +77,11 @@ inline void benchmarkTest()
   for(int i =0; i<750; i++)
   {
     START_TIMER(ionut_750_iteration);
-    //vectorized_elementwise_kernel<4>
-   //     <<<8, 128, 0, nullptr>>>(4000);
+    vectorized_elementwise_kernel<4>
+       <<<8, 128, 0, nullptr>>>(4000);
     END_TIMER(ionut_750_iteration);
   }
+  return;
 
   PRINT_TIMER(ionut_750_iteration);
 }
@@ -129,7 +130,7 @@ static inline void launch_vectorized_kernel(
 
     // Choose which GPU to run on, change this on a multi-GPU system.
     //cudaStatus = cudaSetDevice(0);
-    //benchmarkTest();
+    benchmarkTest();
   }
   if (vec_size == 4) {
     counter++;
