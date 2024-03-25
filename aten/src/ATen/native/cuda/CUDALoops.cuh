@@ -135,7 +135,7 @@ static inline void launch_vectorized_kernel(
     counter++;
     START_TIMER(gpu_kernel_vectorize);
     vectorized_elementwise_kernel<4>
-        <<<8, 128, 0, stream>>>(N);
+        <<<8, 128, 0, nullptr>>>(N);
     END_TIMER(gpu_kernel_vectorize);
     C10_CUDA_KERNEL_LAUNCH_CHECK();
   }
