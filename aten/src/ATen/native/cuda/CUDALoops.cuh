@@ -148,10 +148,7 @@ static inline void launch_vectorized_kernel(
   static int total =0;
   if(counter ==0)
   {
-    cudaError_t cudaStatus;
 
-    // Choose which GPU to run on, change this on a multi-GPU system.
-    cudaStatus = cudaSetDevice(0);
     //benchmarkTest();
   }
   if (vec_size == 4) {
@@ -301,8 +298,16 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
   if (contiguous) {
     //return;
     static int counter=0;
+    if(counter==0)
+    {
+      cudaError_t cudaStatus;
+
+      // Choose which GPU to run on, change this on a multi-GPU system.
+      cudaStatus = cudaSetDevice(0);
+    }
     counter++;
     at::detail::Array<char*, 1> data2;
+    
     DEFINE_TIMER(ionut1);
     //DEFINE_TIMER(ionut2);
     START_TIMER(ionut1);
