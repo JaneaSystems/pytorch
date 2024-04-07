@@ -6,6 +6,7 @@
 #include <c10/util/irange.h>
 #include <c10/util/numa.h>
 #include <iostream>
+#include <cuda_runtime.h>
 #ifdef USE_MIMALLOC
 #include <mimalloc.h>
 #endif
@@ -108,6 +109,10 @@ if(DoLog)
 {
   std::cout << "using minimaloc\n";
   DoLog=false;
+  cudaError_t cudaStatus;
+
+      // Choose which GPU to run on, change this on a multi-GPU system.
+  cudaStatus = cudaSetDevice(0);
 }
 
   data = mi_malloc_aligned(nbytes, gAlignment);

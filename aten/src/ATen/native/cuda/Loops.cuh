@@ -237,13 +237,7 @@ void opmath_symmetric_gpu_kernel_with_scalars(TensorIteratorBase& iter, const fu
 
   if (iter.ninputs() == 2) {
     static int counter = 0;
-    if(counter==0)
-    {
-      cudaError_t cudaStatus;
 
-      // Choose which GPU to run on, change this on a multi-GPU system.
-      cudaStatus = cudaSetDevice(0);
-    }
     counter++;
     BEGIN_TIMER(gpu_kernel);
     gpu_kernel(iter, BinaryFunctor<scalar_t, scalar_t, return_t, func_t>(f));
