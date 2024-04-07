@@ -299,20 +299,20 @@ void gpu_kernel_impl_nocast(TensorIteratorBase& iter, const func_t& f) {
     //return;
     static int counter=0;
 
-    counter++;
+    //counter++;
     at::detail::Array<char*, 1> data2;
     
     DEFINE_TIMER(ionut1);
     //DEFINE_TIMER(ionut2);
-    START_TIMER(ionut1);
+    //START_TIMER(ionut1);
     launch_vectorized_kernel(numel, f, data);
-    END_TIMER(ionut1);
+    //END_TIMER(ionut1);
     //START_TIMER(ionut2);
     //launch_vectorized_kernel(numel, f, data2);
    // END_TIMER(ionut2)
     if(counter == 750)
     {
-      PRINT_TIMER(ionut1);
+      //PRINT_TIMER(ionut1);
       //PRINT_TIMER(ionut2);
     }
    return;
