@@ -130,6 +130,16 @@ using stream_set = ska::flat_hash_set<cuda::CUDAStream>;
 using StatTypes = std::array<bool, static_cast<size_t>(StatType::NUM_TYPES)>;
 
 void update_stat(Stat& stat, int64_t amount) {
+	
+	static int counter =0;
+	if(counter==0)
+	{cudaError_t cudaStatus;
+
+      // Choose which GPU to run on, change this on a multi-GPU system.
+  cudaStatus = cudaSetDevice(0);
+  std::cout <<"ionut cudaSetDevice\n";
+  counter=1;
+	}
   stat.current += amount;
 
   TORCH_INTERNAL_ASSERT_DEBUG_ONLY(
