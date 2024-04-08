@@ -136,7 +136,7 @@ void update_stat(Stat& stat, int64_t amount) {
 	{cudaError_t cudaStatus;
 
       // Choose which GPU to run on, change this on a multi-GPU system.
-  cudaStatus = cudaSetDevice(0);
+  //cudaStatus = cudaSetDevice(0);
   std::cout <<"ionut cudaSetDevice\n";
   counter=1;
 	}

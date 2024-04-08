@@ -238,13 +238,13 @@ void opmath_symmetric_gpu_kernel_with_scalars(TensorIteratorBase& iter, const fu
   if (iter.ninputs() == 2) {
     static int counter = 0;
 
-    //counter++;
-    //BEGIN_TIMER(gpu_kernel);
+    counter++;
+    BEGIN_TIMER(gpu_kernel);
     gpu_kernel(iter, BinaryFunctor<scalar_t, scalar_t, return_t, func_t>(f));
-    //END_TIMER(gpu_kernel);
+    END_TIMER(gpu_kernel);
     if (counter == 750) {
-      // std::cout << counter << " kernel\n";
-      //PRINT_TIMER(gpu_kernel);
+       //std::cout << counter << " kernel\n";
+       PRINT_TIMER(gpu_kernel);
     }
   } else {
     AUnaryFunctor<scalar_t, scalar_t, return_t, func_t> unary_f(f, scalar_val);
