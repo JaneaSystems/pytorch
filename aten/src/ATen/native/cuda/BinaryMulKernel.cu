@@ -33,12 +33,20 @@ void mul_kernel_cuda(TensorIteratorBase& iter) {
         iter, binary_internal::MulFunctor<opmath_t>());
 #endif
   } else {
+    static int counter =0;
+    counter++;
+    BEGIN_TIMER(mul_kernel_cuda);
     AT_DISPATCH_ALL_TYPES_AND_COMPLEX_AND3(
         kHalf, kBFloat16, kBool, iter.common_dtype(), "mul_cuda", [&]() {
           using opmath_t = at::opmath_type<scalar_t>;
           opmath_symmetric_gpu_kernel_with_scalars<scalar_t>(
               iter, binary_internal::MulFunctor<opmath_t>());
         });
+    END_TIMER(mul_kernel_cuda);
+    if(counter == 750)
+    {
+      PRINT_TIMER(mul_kernel_cuda);
+    }
   }
 }
 
