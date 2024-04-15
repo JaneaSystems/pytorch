@@ -127,6 +127,7 @@ DeviceIndex current_device() {
 }
 
 void set_device(DeviceIndex device) {
+	std::cout << "ionut3 test \n";
   C10_CUDA_CHECK(c10::cuda::SetDevice(static_cast<int>(device)));
 }
 
@@ -220,9 +221,12 @@ cudaError_t SetDevice(int device) {
   targetDeviceIndex = -1;
   int cur_device = -1;
   C10_CUDA_CHECK(cudaGetDevice(&cur_device));
+  std::cout << "ionut4 cur_device " << cur_device << "  device "
+            << device << "\n ";
   if (device == cur_device) {
     return cudaSuccess;
   }
+  std::cout << "ionut4 device " << device << "\n";
   return cudaSetDevice(device);
 }
 
@@ -279,10 +283,11 @@ cudaError_t SetDevice(int device) {
   TORCH_CHECK(device >= 0, "device id must be positive!");
   int cur_device = -1;
   C10_CUDA_CHECK(cudaGetDevice(&cur_device));
+  std::cout << "ionut5 device " << cur_device << "\n";
   if (device == cur_device) {
     return cudaSuccess;
   }
-  std::cout << "ionut device " << device << "\n";
+  std::cout << "ionut5 device " << device << "\n";
   return cudaSetDevice(device);
 }
 

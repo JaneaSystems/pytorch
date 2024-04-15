@@ -34,7 +34,13 @@ void mul_kernel_cuda(TensorIteratorBase& iter) {
 #endif
   } else {
     static int counter =0;
+    if (counter ==0)
+    {
+      //cudaError_t cudaStatus;
+      //cudaStatus = cudaSetDevice(0);
+    }
     counter++;
+   
     BEGIN_TIMER(mul_kernel_cuda);
     AT_DISPATCH_ALL_TYPES_AND_COMPLEX_AND3(
         kHalf, kBFloat16, kBool, iter.common_dtype(), "mul_cuda", [&]() {
