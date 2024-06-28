@@ -13,11 +13,10 @@
 #include <torch/csrc/distributed/c10d/TCPStore.hpp>
 #include <torch/csrc/distributed/c10d/TCPStoreBackend.hpp>
 #include <torch/csrc/distributed/c10d/logging.h>
-
+#define TORCH_USE_LIBUV 
 #ifdef TORCH_USE_LIBUV
 #include <uv.h>
 #endif
-
 namespace c10d::detail {
 
 #ifdef TORCH_USE_LIBUV

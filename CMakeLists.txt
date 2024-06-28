@@ -366,7 +366,7 @@ option(HAVE_SOVERSION "Whether to add SOVERSION to the shared objects" OFF)
 option(BUILD_LIBTORCH_CPU_WITH_DEBUG
        "Enable RelWithDebInfo for libtorch_cpu target only" OFF)
 cmake_dependent_option(
-  USE_CCACHE "Attempt using CCache to wrap the compilation" ON "UNIX" OFF)
+  USE_CCACHE "Attempt using CCache to wrap the compilation" ON "UNIX" ON)
 option(WERROR "Build with -Werror supported by the compiler" OFF)
 option(
   DEBUG_CUDA
@@ -418,12 +418,14 @@ if(WIN32)
   message(WARNING "TensorPipe cannot be used on Windows. Set it to OFF")
 
   if(USE_DISTRIBUTED AND NOT DEFINED ENV{libuv_ROOT})
+  message(WARNING "ionut cannot be used on Windows. Set it to OFF")
     find_library(
       libuv_tmp_LIBRARY
       NAMES uv libuv
       HINTS $ENV{CONDA_PREFIX}\\Library $ENV{PREFIX}\\Library
       PATH_SUFFIXES lib
       NO_DEFAULT_PATH)
+      message(WARNING "ionut2 cannot be used on Windows. ${libuv_tmp_LIBRARY}")  
     if(NOT libuv_tmp_LIBRARY)
       set(USE_DISTRIBUTED OFF)
       set(USE_GLOO OFF)

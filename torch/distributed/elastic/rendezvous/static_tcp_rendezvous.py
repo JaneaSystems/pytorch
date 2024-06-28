@@ -62,6 +62,7 @@ class StaticTCPRendezvous(RendezvousHandler):
 
     def next_rendezvous(self) -> RendezvousInfo:
         logger.info("Creating TCPStore as the c10d::Store implementation")
+        print("IOnut")
         is_master = self.rank == 0
         if not self._store:
             self._store = TCPStore(  # type: ignore[call-arg]
@@ -71,6 +72,7 @@ class StaticTCPRendezvous(RendezvousHandler):
                 is_master,
                 self.timeout,
                 multi_tenant=True,
+                use_libuv=True
             )
         store = PrefixStore(self.run_id, self._store)
         # TCPStore server instance is used by trainer code

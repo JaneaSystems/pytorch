@@ -13,6 +13,7 @@ namespace c10d::detail {
 bool isLogLevelEnabled(LogLevel level) noexcept {
   // c10 logger does not support debug and trace levels. In order to map higher
   // levels we adjust our ordinal value.
+  return true;
   int level_int = static_cast<int>(level) - 2;
 
   if (level_int >= 0) {
