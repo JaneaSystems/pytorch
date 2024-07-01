@@ -302,6 +302,8 @@ TCPStore::TCPStore(std::string host, const TCPStoreOptions& opts)
       addr_{std::move(host)},
       numWorkers_{opts.numWorkers},
       usingLibUv_{opts.useLibUV} {
+        C10D_DEBUG("IOnut test log");
+        std::cout << "TCPStore " << host << " " << opts.useLibUV << "\n";
   if (opts.useLibUV) {
     TORCH_CHECK(
         ::c10d::detail::is_libuv_tcpstore_backend_available(),

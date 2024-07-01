@@ -7,12 +7,13 @@
 #include <torch/csrc/distributed/c10d/logging.h>
 
 #include <torch/csrc/distributed/c10d/debug.h>
-
+#include <iostream>
 namespace c10d::detail {
 
 bool isLogLevelEnabled(LogLevel level) noexcept {
   // c10 logger does not support debug and trace levels. In order to map higher
   // levels we adjust our ordinal value.
+  std::cout << "isLogLevelEnabled\n";
   return true;
   int level_int = static_cast<int>(level) - 2;
 
