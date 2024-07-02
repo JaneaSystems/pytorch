@@ -826,6 +826,10 @@ bool SocketConnectOp::tryConnect(int family) {
 
     ::addrinfo* naked_result = nullptr;
     // patternlint-disable cpp-dns-deps
+     C10D_DEBUG(
+        "The client socket will attempt to connect getaddrinfo ({}, {}).",
+        host_,
+        port_);
     int r = ::getaddrinfo(host_, port_.c_str(), &hints, &naked_result);
     if (r != 0) {
       const char* gai_err = ::gai_strerror(r);
@@ -845,7 +849,7 @@ bool SocketConnectOp::tryConnect(int family) {
 
       for (::addrinfo* addr = naked_result; addr != nullptr;
            addr = addr->ai_next) {
-        C10D_TRACE("The client socket is attempting to connect to {}.", *addr);
+        C10D_TRACE("The client socket is attempting to connect to {}.ionut", *addr);
 
         ConnectResult cr = tryConnect(*addr);
         if (cr == ConnectResult::Success) {

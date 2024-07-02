@@ -63,6 +63,8 @@ class StaticTCPRendezvous(RendezvousHandler):
     def next_rendezvous(self) -> RendezvousInfo:
         logger.info("Creating TCPStore as the c10d::Store implementation")
         print("IOnut1")
+        print(self.master_addr)
+        print("IOnut2")
         is_master = self.rank == 0
         if not self._store:
             self._store = TCPStore(  # type: ignore[call-arg]
@@ -72,7 +74,6 @@ class StaticTCPRendezvous(RendezvousHandler):
                 is_master,
                 self.timeout,
                 multi_tenant=True,
-                use_libuv=True
             )
         store = PrefixStore(self.run_id, self._store)
         # TCPStore server instance is used by trainer code
@@ -114,6 +115,7 @@ def create_rdzv_handler(params: RendezvousParameters) -> RendezvousHandler:
             "Try add --master-port and --master-addr to the cmd request"
         )
     master_addr, master_port = parse_rendezvous_endpoint(endpoint, -1)
+    master_addr="localhost"
     if master_port == -1:
         raise ValueError(
             f"Port is absent in endpoint: {endpoint}. Try launching with --master-port"
