@@ -6078,7 +6078,8 @@ Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
   END_TIMER(stack_jvp);
   static int counter =0;
   counter++;
-  if (10000==counter)
+  //std::cout << counter << "\n";
+  if (10==counter)
   PRINT_TIMER(stack_jvp);
   return out_fw_grad;
 }
