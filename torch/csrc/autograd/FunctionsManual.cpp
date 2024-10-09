@@ -38,7 +38,8 @@
 #if defined _WIN32
 #include <windows.h>
 #else
-
+#include <fstream>
+#include <sstream>
 #endif
 #define DEFINE_TIMER(NAME) static double elapsed_seconds_##NAME = 0;
 #define START_TIMER(NAME) auto start##NAME = std::chrono::steady_clock::now();
