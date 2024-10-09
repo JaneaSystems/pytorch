@@ -6080,7 +6080,7 @@ double getCPUUsage() {
     return (((unsigned long long)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
   };
 
-    unsigned long long idleDiff = FileTimeToInt64(idleTimeEnd) - FileTimeToInt64(idleTimeStart;
+    unsigned long long idleDiff = FileTimeToInt64(idleTimeEnd) - FileTimeToInt64(idleTimeStart);
     unsigned long long kernelDiff = FileTimeToInt64(kernelTimeEnd) - FileTimeToInt64(kernelTimeStart);
     unsigned long long userDiff = FileTimeToInt64(userTimeEnd) - FileTimeToInt64(userTimeStart);
     unsigned long long totalDiff = kernelDiff + userDiff;
