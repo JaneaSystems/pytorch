@@ -6140,7 +6140,7 @@ Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
   // TODO: consolidate with the logic of cat_jvp
  // DEFINE_TIMER(stack_jvp)
   //START_TIMER(stack_jvp);
-  double cpuUsageBefore = getCPUUsage();
+  double cpuUsageBefore = GetCPUUsage();
   Tensor out_fw_grad;
 
   auto any_defined = false;
@@ -6165,7 +6165,7 @@ Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
   
   //if (10==counter)
   //PRINT_TIMER(stack_jvp);
-  double cpuUsageAfter = getCPUUsage();
+  double cpuUsageAfter = GetCPUUsage();
   double cpuUsageDuringOperation = cpuUsageAfter - cpuUsageBefore;
   std::cout << cpuUsageDuringOperation << "\n";
   return out_fw_grad;
