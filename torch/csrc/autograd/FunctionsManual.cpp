@@ -35,6 +35,11 @@
 
 #include <chrono>
 #include <iostream>
+#if defined _WIN32
+#include <windows.h>
+#else
+
+#endif
 #define DEFINE_TIMER(NAME) static double elapsed_seconds_##NAME = 0;
 #define START_TIMER(NAME) auto start##NAME = std::chrono::steady_clock::now();
 #define BEGIN_TIMER(NAME)                   \
@@ -6052,11 +6057,88 @@ Tensor block_diag_jvp(at::TensorList tensors) {
   return out_fw_grad;
 }
 
+#if defined _WIN32
+unsigned long long FileTimeToInt64(const FILETIME& ft) {
+  return (((unsigned long long)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
+}
+
+// Function to get CPU usage
+double GetCPUUsage() {
+  static FILETIME prev_idle_time, prev_kernel_time, prev_user_time;
+
+  FILETIME idle_time, kernel_time, user_time;
+  if (!GetSystemTimes(&idle_time, &kernel_time, &user_time)) {
+    return -1.0; // Failure
+  }
+
+  unsigned long long idle_diff =
+      FileTimeToInt64(idle_time) - FileTimeToInt64(prev_idle_time);
+  unsigned long long kernel_diff =
+      FileTimeToInt64(kernel_time) - FileTimeToInt64(prev_kernel_time);
+  unsigned long long user_diff =
+      FileTimeToInt64(user_time) - FileTimeToInt64(prev_user_time);
+
+  prev_idle_time = idle_time;
+  prev_kernel_time = kernel_time;
+  prev_user_time = user_time;
+
+  unsigned long long total_diff = kernel_diff + user_diff;
+  if (total_diff == 0) {
+    return 0.0;
+  }
+
+  return (1.0 - (double)idle_diff / total_diff) *
+      100.0; // Return CPU usage as a percentage
+}
+#else
+
+void get_cpu_times(
+    unsigned long long& user,
+    unsigned long long& nice,
+    unsigned long long& system,
+    unsigned long long& idle) {
+  std::ifstream proc_stat("/proc/stat");
+  std::string line;
+
+  while (std::getline(proc_stat, line)) {
+    if (line.compare(0, 3, "cpu") == 0) {
+      std::istringstream iss(line);
+      std::string cpu;
+      iss >> cpu >> user >> nice >> system >> idle;
+      break;
+    }
+  }
+}
+
+// Function to calculate CPU usage
+double GetCPUUsage() {
+  unsigned long long user, nice, system, idle;
+  static unsigned long long prev_user = 0, prev_nice = 0, prev_system = 0,
+                            prev_idle = 0;
+
+  get_cpu_times(user, nice, system, idle);
+
+  unsigned long long user_diff = user - prev_user;
+  unsigned long long nice_diff = nice - prev_nice;
+  unsigned long long system_diff = system - prev_system;
+  unsigned long long idle_diff = idle - prev_idle;
+
+  prev_user = user;
+  prev_nice = nice;
+  prev_system = system;
+  prev_idle = idle;
+
+  unsigned long long total = user_diff + nice_diff + system_diff;
+  return (total == 0) ? 0.0 : ((double)total / (total + idle_diff)) * 100.0;
+}
+#endif
+
+
 Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
   // Basically copy of cat_jvp above
   // TODO: consolidate with the logic of cat_jvp
-  //DEFINE_TIMER(stack_jvp)
-  //START_TIMER(stack_jvp);
+  DEFINE_TIMER(stack_jvp)
+  START_TIMER(stack_jvp);
   Tensor out_fw_grad;
 
   auto any_defined = false;
@@ -6075,12 +6157,12 @@ Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
     }
     out_fw_grad = at::stack(fw_grads, dim);
   }
-  //END_TIMER(stack_jvp);
+  END_TIMER(stack_jvp);
   static int counter =0;
   counter++;
-  //std::cout << counter << "\n";
-  //if (10==counter)
-  //PRINT_TIMER(stack_jvp);
+  std::cout << GetCPUUsage() << "\n";
+  if (10==counter)
+  PRINT_TIMER(stack_jvp);
   return out_fw_grad;
 }
 
@@ -6170,8 +6252,7 @@ static Tensor _norm_jvp(
   }
   return result_t;
 }
-
-// Helper for {batch,layer,group}_norms below only
+  // Helper for {batch,layer,group}_norms below only
 // Computes the jvp for `input * weight + bias` where weight and bias may be
 // undefined Possibly modifies the input inplace
 static Tensor _affine_jvp(
