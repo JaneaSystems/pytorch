@@ -6138,8 +6138,9 @@ double GetCPUUsage() {
 Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
   // Basically copy of cat_jvp above
   // TODO: consolidate with the logic of cat_jvp
-  DEFINE_TIMER(stack_jvp)
-  START_TIMER(stack_jvp);
+ // DEFINE_TIMER(stack_jvp)
+  //START_TIMER(stack_jvp);
+  double cpuUsageBefore = getCPUUsage();
   Tensor out_fw_grad;
 
   auto any_defined = false;
@@ -6158,12 +6159,15 @@ Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
     }
     out_fw_grad = at::stack(fw_grads, dim);
   }
-  END_TIMER(stack_jvp);
+  //END_TIMER(stack_jvp);
   static int counter =0;
   counter++;
-  std::cout << GetCPUUsage() << "\n";
-  if (10==counter)
-  PRINT_TIMER(stack_jvp);
+  
+  //if (10==counter)
+  //PRINT_TIMER(stack_jvp);
+  double cpuUsageAfter = getCPUUsage();
+  double cpuUsageDuringOperation = cpuUsageAfter - cpuUsageBefore;
+  std::cout << cpuUsageDuringOperation << "\n";
   return out_fw_grad;
 }
 
