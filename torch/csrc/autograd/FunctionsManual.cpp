@@ -6067,10 +6067,10 @@ double getCPUUsage() {
   // Get the initial CPU times
   GetSystemTimes(&idleTimeStart, &kernelTimeStart, &userTimeStart);
 
-  // Simulate workload (replace with actual code)
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  // Sleep for a short time to allow the CPU usage to change
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  // Get the CPU times after the workload
+  // Get the CPU times after the short interval
   GetSystemTimes(&idleTimeEnd, &kernelTimeEnd, &userTimeEnd);
 
   // Helper function to convert FILETIME to a 64-bit integer
@@ -6078,15 +6078,12 @@ double getCPUUsage() {
     return (((unsigned long long)ft.dwHighDateTime) << 32) | ft.dwLowDateTime;
   };
 
-  unsigned long long idleDiff =
-      FileTimeToInt64(idleTimeEnd) - FileTimeToInt64(idleTimeStart);
-  unsigned long long kernelDiff =
-      FileTimeToInt64(kernelTimeEnd) - FileTimeToInt64(kernelTimeStart);
-  unsigned long long userDiff =
-      FileTimeToInt64(userTimeEnd) - FileTimeToInt64(userTimeStart);
-  unsigned long long totalDiff = kernelDiff + userDiff;
+    unsigned long long idleDiff = FileTimeToInt64(idleTimeEnd) - FileTimeToInt64(idleTimeStart;
+    unsigned long long kernelDiff = FileTimeToInt64(kernelTimeEnd) - FileTimeToInt64(kernelTimeStart);
+    unsigned long long userDiff = FileTimeToInt64(userTimeEnd) - FileTimeToInt64(userTimeStart);
+    unsigned long long totalDiff = kernelDiff + userDiff;
 
-  return totalDiff == 0 ? 0.0 : (1.0 - (double)idleDiff / totalDiff) * 100.0;
+    return totalDiff == 0 ? 0.0 : (1.0 - (double)idleDiff / totalDiff) * 100.0;
 #else
   // Linux-specific code
   unsigned long long userStart, niceStart, systemStart, idleStart;
@@ -6108,10 +6105,10 @@ double getCPUUsage() {
   // Get the initial CPU times
   getLinuxCPUTime(userStart, niceStart, systemStart, idleStart);
 
-  // Simulate workload (replace with actual code)
-  std::this_thread::sleep_for(std::chrono::seconds(1));
+  // Sleep for a short time to allow CPU usage to change
+  std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-  // Get the CPU times after the workload
+  // Get the CPU times after the short interval
   getLinuxCPUTime(userEnd, niceEnd, systemEnd, idleEnd);
 
   // Calculate CPU usage
@@ -6124,7 +6121,6 @@ double getCPUUsage() {
   return total == 0 ? 0.0 : ((double)total / (total + idleDiff)) * 100.0;
 #endif
 }
-
 
 
 Tensor stack_jvp(at::TensorList tensors, int64_t dim) {
